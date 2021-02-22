@@ -1,8 +1,122 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/pixi.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/index.css">
+  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    
+    <title>Document</title>
+    
+
+    <script>
+
+        let app;
+        let desk;
+        let player;
+        let keys={};
+
+        window.onload = function() {
+            app=new PIXI.Application(
+                {
+                    width: 800,
+                    height: 600,
+                    backgroundColor: 0xFFFFFF
+                }
+            )
+            document.body.appendChild(app.view)
+
+
+            var tex = PIXI.Texture.from("images/t3.png");
+            var tile=new PIXI.TilingSprite(tex,app.view.width,app.view.height);
+            app.stage.addChild(tile);
+
+            player = new PIXI.Sprite.from("images/c.png");
+            player.anchor.set(0.5);
+            player.x = app.view.width/2;
+            player.y = app.view.height-70;
+       
+            let bookshelf = new PIXI.Sprite.from("images/shelf1.png");
+            bookshelf.anchor.set(0.5);
+            bookshelf.x=app.view.width-150;
+            bookshelf.y=app.view.height/2;
+            app.stage.addChild(bookshelf);
+
+            desk = new PIXI.Sprite.from("images/d4.png");
+            desk.anchor.set(0.5);
+            const ratio=desk.width/desk.height;
+            desk.height=220;
+            desk.width=380;
+            desk.x=140;
+            desk.y=140;
+            app.stage.addChild(desk);
+
+            app.stage.addChild(player);
+
+            app.ticker.add(gameLoop);
+            app.stage.interactive=true;
+            
+            window.addEventListener("keydown",keyDown);
+            window.addEventListener("keyup",keyUp);
+            
+            var song=new Audio("assets/music/hobbits.mp3");
+            song.play();
+
+            function keyDown(k){
+               // document.querySelector("#debug").innerHTML=
+               // "Key down: " + k.keyCode;
+                let kc=k.keyCode;
+                keys[kc]=true;
+            }
+
+            function keyUp(k) {
+                let kc=k.keyCode;
+                keys[kc]=false;
+            }
+
+            function gameLoop() {
+                timeSinceLastFrame=Date.now()-lastTime;
+                lastTime=Date.now();
+                let timeElapsed=(lastTime-startTime)/100.0; //in seconds
+                document.querySelector("#debug").innerHTML=timeElapsed;
+
+                player.y+=0.2*Math.sin(Date.now()/160.0);
+                handleMovementKeys();
+                
+            }
+
+            function handleMovementKeys(){
+                if (keys[87]) player.y-=5;
+                if (keys[83]) player.y+=5;
+                if (keys[65]) player.x-=5;
+                if (keys[68]) player.x+=5;
+            }
+
+            var startTime=Date.now();
+            var lastTime=Date.now();
+            var timeSinceLastFrame=0;
+        }
+    </script>
+
+
+
 </head>
 
-<body>
-<p>Test</p>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand">Navbar</a>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </nav>
+<body class="mybody">
+    
+ <div id="debug" style="color:white;"></div>
 </body>
 </html>
